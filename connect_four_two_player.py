@@ -7,7 +7,7 @@ def board_game(array):
     print("| ", row[0], " | " ,row[1], " | ", row[2], " | ", row[3]," | ", row[4], " | ", row[5], " | ", row[6], " | ")
     print("-------------------------------------------")
 
-allowed_counters = ['X', 'O']
+allowed_counters = ['R', 'Y']
 
 def count_star_in_column(array, k):
   count = 0
