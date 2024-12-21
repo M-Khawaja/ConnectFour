@@ -1,4 +1,4 @@
-This repository contains the Python scripts to play various implementations 
+This repository contains the Python script to play an implementation 
 of the Connect Four game.
 
 The "connect_four.py" file contains the option to play against the computer 
