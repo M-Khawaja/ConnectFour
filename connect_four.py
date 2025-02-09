@@ -243,32 +243,20 @@ def play_connect_4_two_player(array, counter):
 rows, cols = (6, 7)   
 
 #Playing game until the game is won
-while True:
+playing = True
+while playing:
     print("\nWelcome to Connect Four.\n")
-
     instructions = str(input("\033[1mWould you like to see the instructions for the game? (yes/no): \033[0m")).lower()
     print("\n")
-    
-    while True:
-        if instructions == 'yes' or instructions == 'y':
-            print(dedent("""
-            Instructions for the game:
-
-            1. Each player takes their turn to drop their counter into any column in a 7 x 6 grid.
-
-            2. The counter always falls to the lowest possible position in the column.
-
-            3. A player wins if they align four of their counters together; either in a row, a column, or diagonally.
-
-            4. If the grid fills up without a player winning then the game ends in a draw.
-            """))
-            input("\033[1mPress any key to begin the game.\033[0m\n")
-
-            break
-        else:
-            break
-
-    #The player chooses whether to play against computer or play a two-player game
+    if instructions in ('yes', 'y'):
+        print(dedent("""
+        Instructions for the game:
+        1. Each player takes their turn to drop their counter into any column in a 7 x 6 grid.
+        2. The counter always falls to the lowest possible position in the column.
+        3. A player wins if they align four of their counters together; either in a row, a column, or diagonally.
+        4. If the grid fills up without a player winning then the game ends in a draw.
+        """))
+        input("\033[1mPress any key to begin the game.\033[0m\n")
 
     print(dedent("""
     There are two ways to play the game.
@@ -276,95 +264,57 @@ while True:
     B) Play a two-player game.
     """))
 
-    while True:
-        try:
-            mode = str(input("\033[1mPlease enter 'A' for Option A) or enter 'B' for Option B): \033[0m")).upper()
-            print("")
-            #Exit loop if correct mode is chosen.
-            if mode == 'A' or mode == 'B':
-                break
-        except ValueError:
-            print("")
+    mode = ""
+    attempt_count = 0
+    while mode not in ('A', 'B'):
+        mode = str(input("\033[1mPlease enter 'A' for Option A) or enter 'B' for Option B): \033[0m")).upper()
+        print("")
+        attempt_count += 1
+        if attempt_count > 5:
+            print("Too many invalid attempts. Exiting game.")
+            playing = False
+            break
+    
+    if not playing:
+        break
 
-    #Playing against the computer
     if mode == 'A':
-
-        #There are only two counters in the game
         allowed_counters = ['R', 'Y']
-
         chosen_counters = []
-        #This is the 2D list
         array = [["*"] * cols for _ in range(rows)]
-        #Asking the player to choose a counter
-        while True:
-            try:
-                player_counter = str(input("\033[1mPlease choose a counter out of R and Y: \033[0m"))
-                print("\n")
-                if player_counter == 'R' or player_counter == 'Y':
-                    chosen_counters.append(player_counter)
-                    counters_left = [counter for counter in allowed_counters if counter != player_counter]
-                    computer_counter = counters_left[0]
-                    chosen_counters.append(computer_counter)
-                    break
-                #else:
-                    #print("Invalid input.")
-            except ValueError:
-                print(" ")
-
-        #Want to track the player's moves
-        #This list will contain the column numbers where the player has successfully stored a counter
-        player_moves = []
+        player_counter = ""
+        attempt_count = 0
+        while player_counter not in ('R', 'Y'):
+            player_counter = str(input("\033[1mPlease choose a counter out of R and Y: \033[0m"))
+            print("\n")
+            attempt_count += 1
+            if attempt_count > 5:
+                print("Too many invalid attempts. Exiting game.")
+                playing = False
+                break
         
-        #Tracking the columns that become filled.
-        #This list will contain the columns which are full.
+        if not playing:
+            break
+
+        chosen_counters.append(player_counter)
+        computer_counter = [counter for counter in allowed_counters if counter != player_counter][0]
+        chosen_counters.append(computer_counter)
+        player_moves = []
         full_columns = []
-
-        #Giving the player the opportunity to begin the game
-
         player_starts = str(input("\033[1mWould you like to make the first move of the game? (yes/no): \033[0m")).lower()
         print("\n")
-
-        if player_starts == 'yes' or player_starts == 'y':
-            starting_counter = player_counter
-        else:
-            starting_counter = computer_counter
-
+        starting_counter = player_counter if player_starts in ('yes', 'y') else computer_counter
         my_iterator = iterate_elements(chosen_counters, start_with=starting_counter)
-        
-        #Playing the game
         while not game_won(array) and not array_full(array):
             current_counter = next(my_iterator)
             play_connect_4(array, current_counter)
-        
         if array_full(array):
             print("The game is a draw!")
-            break
 
-    #Playing two-player game
-    if mode == 'B':
-
-        allowed_counters = ['R', 'Y']
-
-        #This is the 2D list
-        array = [["*"] * cols for _ in range(rows)]
-        #Switching the counter between player R and player Y
-        myIterator = cycle(allowed_counters)
-
-        
-        while not game_won(array) and not array_full(array):
-            current_counter = next(myIterator)
-            play_connect_4_two_player(array, current_counter)
-        
-        if array_full(array):
-            print("The game is a draw!")
-            break
-
-    # Ask if players want to restart
     print("\n")
     restart = input("\033[1mDo you want to play again? (yes/no): \033[0m").strip().lower()
     print("\n")
-    if restart != 'yes' and restart != 'y':
+    if restart not in ('yes', 'y'):
         print("Thank you for playing Connect Four!\n")
-        break
-    
+        playing = False
 
