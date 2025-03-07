@@ -100,16 +100,13 @@ def game_won(array):
 #This function enables the computer to check for a potential win
 #without altering the game array
 def checking_for_win(array, k, counter):
-    # Creating an independent copy of the array
-    simulated_array = deepcopy(array)
-    #print(f"Debugging: Simulating move for column: {k}, counter: {counter}")
-    #Place the counter in the first available row in the column
+    # Creating a shallow copy of the array (only copying rows, not deep copying everything)
+    simulated_array = [row[:] for row in array]  # This avoids deep copying the whole structure
+    
     if count_star_in_column(simulated_array, k) != 0:  
         place_counter(simulated_array, k, counter)
         if player_won(simulated_array, counter):
-            #print(f"Debugging: Counter {counter} leads to a win in column {k}")
             return True
-    # If the column is full
     return False
 
 #This function plays the game (vs the computer)
