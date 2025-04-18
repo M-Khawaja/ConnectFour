@@ -1,3 +1,5 @@
+## Connect Four
+
 This repository contains the Python script to play an implementation 
 of the Connect Four game.
 
